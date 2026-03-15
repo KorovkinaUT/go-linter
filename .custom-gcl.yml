@@ -1,0 +1,6 @@
+version: v2.11.3
+
+plugins:
+  - module: 'github.com/KorovkinaUT/go-linter'
+    import: "github.com/KorovkinaUT/go-linter/plugin"
+    path: .
