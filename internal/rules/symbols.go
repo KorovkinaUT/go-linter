@@ -11,7 +11,13 @@ func (NoSpecialSymbols) Description() string {
 func (NoSpecialSymbols) Check(msg string) string {
 	for _, r := range msg {
 
-		if unicode.IsLetter(r) || unicode.IsDigit(r) || unicode.IsSpace(r) || r == '%' {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) || unicode.IsSpace(r) {
+			continue
+		}
+
+		// For format strings
+		switch r {
+		case '%', '.', '+', '#', '-', '*':
 			continue
 		}
 
