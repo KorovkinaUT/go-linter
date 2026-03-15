@@ -5,6 +5,7 @@ import (
 	"go/token"
 	"strings"
 
+	"github.com/KorovkinaUT/go-linter/internal/rules"
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
 	"golang.org/x/tools/go/ast/inspector"
@@ -17,6 +18,8 @@ func run(pass *analysis.Pass) (any, error) {
 	}
 
 	nodeFilter := []ast.Node{(*ast.CallExpr)(nil)}
+
+	rules := rules.DefaultRules()
 
 	inspector.Preorder(nodeFilter, func(node ast.Node) {
 		call := node.(*ast.CallExpr)
@@ -35,11 +38,11 @@ func run(pass *analysis.Pass) (any, error) {
 			return
 		}
 
-		pass.Reportf(
-			call.Pos(),
-			"log message detected: %q",
-			msg,
-		)
+		for _, rule := range rules {
+			if err := rule.Check(msg); err != "" {
+				pass.Reportf(call.Pos(), err)
+			}
+		}
 	})
 
 	return nil, nil
@@ -56,7 +59,7 @@ func extractLogMessage(call *ast.CallExpr) (string, bool) {
 	if !ok {
 		return "", false
 	}
-	
+
 	// Check if first agrument is string literal
 	if lit.Kind != token.STRING {
 		return "", false
