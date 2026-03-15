@@ -2,6 +2,8 @@ package analyzer
 
 import (
 	"go/ast"
+	"go/token"
+	"strings"
 
 	"golang.org/x/tools/go/analysis"
 	"golang.org/x/tools/go/analysis/passes/inspect"
@@ -24,10 +26,41 @@ func run(pass *analysis.Pass) (any, error) {
 			return
 		}
 
-		if isLogCall(pass, selector) {
-			pass.Reportf(call.Pos(), "log call detected: %s", selector.Sel.Name)
+		if !isLogCall(pass, selector) {
+			return
 		}
+
+		msg, ok := extractLogMessage(call)
+		if !ok {
+			return
+		}
+
+		pass.Reportf(
+			call.Pos(),
+			"log message detected: %q",
+			msg,
+		)
 	})
 
 	return nil, nil
+}
+
+func extractLogMessage(call *ast.CallExpr) (string, bool) {
+	if len(call.Args) == 0 {
+		return "", false
+	}
+
+	firstArg := call.Args[0]
+	// Check if first agrument is literal
+	lit, ok := firstArg.(*ast.BasicLit)
+	if !ok {
+		return "", false
+	}
+	
+	// Check if first agrument is string literal
+	if lit.Kind != token.STRING {
+		return "", false
+	}
+
+	return strings.Trim(lit.Value, `"`), true
 }
