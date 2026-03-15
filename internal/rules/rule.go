@@ -10,5 +10,6 @@ func DefaultRules() []Rule {
 		Lowercase{},
 		English{},
 		NoSpecialSymbols{},
+		NewNoSensitiveData(),
 	}
 }
