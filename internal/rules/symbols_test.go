@@ -23,6 +23,11 @@ func TestNoSpecialSymbols_Check(t *testing.T) {
 			want: "",
 		},
 		{
+			name: "valid format string",
+			msg:  "request %d completed",
+			want: "",
+		},
+		{
 			name: "contains exclamation mark",
 			msg:  "conection failed!!!",
 			want: "log message should not contain special symbols or emoji",
