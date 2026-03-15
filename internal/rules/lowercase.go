@@ -7,10 +7,6 @@ import (
 
 type Lowercase struct{}
 
-func (Lowercase) Description() string {
-	return "first letter in lowercase"
-}
-
 func (Lowercase) Check(msg string) string {
 	if len(msg) == 0 {
 		return ""

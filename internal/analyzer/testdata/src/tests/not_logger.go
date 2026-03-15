@@ -1,8 +1,8 @@
 package a
 
 import (
-	"fmt"
 	"errors"
+	"fmt"
 )
 
 func notLogs() {

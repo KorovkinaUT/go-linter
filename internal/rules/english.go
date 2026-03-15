@@ -4,10 +4,6 @@ import "unicode"
 
 type English struct{}
 
-func (English) Description() string {
-	return "english only"
-}
-
 func (English) Check(msg string) string {
 	for _, r := range msg {
 

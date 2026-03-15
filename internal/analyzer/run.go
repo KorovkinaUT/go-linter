@@ -17,8 +17,10 @@ func run(pass *analysis.Pass) (any, error) {
 		return nil, nil
 	}
 
+	// Filter only calls
 	nodeFilter := []ast.Node{(*ast.CallExpr)(nil)}
 
+	// Get linter rules
 	rules := rules.DefaultRules()
 
 	inspector.Preorder(nodeFilter, func(node ast.Node) {
@@ -29,6 +31,7 @@ func run(pass *analysis.Pass) (any, error) {
 			return
 		}
 
+		// Check if call is a log call
 		if !isLogCall(pass, selector) {
 			return
 		}
@@ -38,6 +41,7 @@ func run(pass *analysis.Pass) (any, error) {
 			return
 		}
 
+		// Check every rule
 		for _, rule := range rules {
 			if err := rule.Check(msg); err != "" {
 				pass.Reportf(call.Pos(), "%s", err)
