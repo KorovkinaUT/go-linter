@@ -40,7 +40,7 @@ func run(pass *analysis.Pass) (any, error) {
 
 		for _, rule := range rules {
 			if err := rule.Check(msg); err != "" {
-				pass.Reportf(call.Pos(), err)
+				pass.Reportf(call.Pos(), "%s", err)
 			}
 		}
 	})
