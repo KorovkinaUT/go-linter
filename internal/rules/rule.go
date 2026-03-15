@@ -9,5 +9,6 @@ func DefaultRules() []Rule {
 	return []Rule{
 		Lowercase{},
 		English{},
+		NoSpecialSymbols{},
 	}
 }
