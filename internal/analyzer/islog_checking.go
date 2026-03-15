@@ -27,7 +27,15 @@ func isStdLogPackageCall(pass *analysis.Pass, selector *ast.SelectorExpr) bool {
 		return false
 	}
 
-	obj := pass.TypesInfo.Uses[ident]
+	if pass.TypesInfo == nil || pass.TypesInfo.Uses == nil {
+		return false
+	}
+
+	obj, ok := pass.TypesInfo.Uses[ident]
+	if !ok || obj == nil {
+		return false
+	}
+
 	// Check if it is package
 	pkgName, ok := obj.(*types.PkgName)
 	if !ok {
@@ -45,7 +53,15 @@ func isSlogPackageCall(pass *analysis.Pass, selector *ast.SelectorExpr) bool {
 		return false
 	}
 
-	obj := pass.TypesInfo.Uses[ident]
+	if pass.TypesInfo == nil || pass.TypesInfo.Uses == nil {
+		return false
+	}
+
+	obj, ok := pass.TypesInfo.Uses[ident]
+	if !ok || obj == nil {
+		return false
+	}
+
 	// Check if it is package
 	pkgName, ok := obj.(*types.PkgName)
 	if !ok {
@@ -75,6 +91,10 @@ func isZapLoggerMethodCall(pass *analysis.Pass, selector *ast.SelectorExpr) bool
 
 // Returns type is string with full package path
 func typeString(pass *analysis.Pass, expr ast.Expr) string {
+	if pass.TypesInfo == nil {
+		return ""
+	}
+
 	typ := pass.TypesInfo.TypeOf(expr)
 	if typ == nil {
 		return ""
