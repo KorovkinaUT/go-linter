@@ -1,31 +1,30 @@
-BINARY=loglint
-CUSTOM_GCL=custom-gcl
-PACKAGE?=./...
+BINARY=./bin/loglint
+CUSTOM_GCL=./custom-gcl
+PACKAGE ?= ./...
 
-.PHONY: test
-test:
-	go test ./...
+.PHONY: build
+build: build-cli build-plugin
+
+.PHONY: build-cli
+build-cli:
+	@go build -o $(BINARY) ./cmd/loglint
+
+.PHONY: build-plugin
+build-plugin:
+	@golangci-lint custom
 
 .PHONY: run
 run:
-	go run ./cmd/loglint $(PACKAGE)
-
-.PHONY: custom-lint
-custom-lint:
-	golangci-lint custom
+	@$(BINARY) $(PACKAGE)
 
 .PHONY: plugin
-plugin: custom-lint
-	./$(CUSTOM_GCL) run $(PACKAGE)
+plugin:
+	@$(CUSTOM_GCL) run $(PACKAGE)
 
-.PHONY: build
-build:
-	go build -o ./bin/$(BINARY) ./cmd/loglint
-
-.PHONY: run-binary
-run-binary: build
-	./bin/$(BINARY) $(PACKAGE)
+.PHONY: test
+test:
+	@go test ./...
 
 .PHONY: clean
 clean:
-	rm -rf ./bin ./$(CUSTOM_GCL)
+	@rm -rf ./bin $(CUSTOM_GCL)
