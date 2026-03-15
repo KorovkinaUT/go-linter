@@ -14,39 +14,20 @@ func run(pass *analysis.Pass) (any, error) {
 		return nil, nil
 	}
 
-	nodeFilter := []ast.Node{
-		(*ast.CallExpr)(nil),
-	}
+	nodeFilter := []ast.Node{(*ast.CallExpr)(nil)}
 
-	inspector.Preorder(nodeFilter, func(n ast.Node) {
-		call := n.(*ast.CallExpr)
+	inspector.Preorder(nodeFilter, func(node ast.Node) {
+		call := node.(*ast.CallExpr)
 
 		selector, ok := call.Fun.(*ast.SelectorExpr)
 		if !ok {
 			return
 		}
 
-		if isLogMethod(selector.Sel.Name) {
+		if isLogCall(pass, selector) {
 			pass.Reportf(call.Pos(), "log call detected: %s", selector.Sel.Name)
 		}
 	})
 
 	return nil, nil
-}
-
-func isLogMethod(name string) bool {
-
-	switch name {
-
-	case "Info",
-		"Warn",
-		"Error",
-		"Debug",
-		"Fatal",
-		"Panic":
-		return true
-
-	}
-
-	return false
 }
