@@ -1,12 +1,12 @@
 package a
 
 import (
-	"fmt",
+	"fmt"
 	"errors"
 )
 
 func notLogs() {
 	fmt.Println("User authenticated successfully!")
 	fmt.Printf("password=%d", 5)
-	errors.Error("Все сломалось")
+	errors.New("Все сломалось")
 }
