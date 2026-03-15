@@ -6,5 +6,8 @@ type Rule interface {
 }
 
 func DefaultRules() []Rule {
-	return []Rule{Lowercase{}}
+	return []Rule{
+		Lowercase{},
+		English{},
+	}
 }
